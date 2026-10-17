@@ -1,0 +1,24 @@
+# LEVEL 6 - MULTI-STAGE BUILD (a small, professional image)
+#
+# Look at the problem: to BUILD a Java program you need the JDK (a big compiler, ~220 MB).
+# To RUN it you only need the JRE (~110 MB). If you use one stage, the compiler stays in the final
+# image for nothing. A multi-stage build uses TWO "FROM" lines: the first stage builds,
+# the second stage is the final image and takes only the result from the first.
+#
+# TODO: write two stages.
+#
+#   Stage 1 (the builder):
+#       FROM eclipse-temurin:21-jdk AS build
+#       WORKDIR /build
+#       COPY src/App.java .
+#       RUN javac -d classes App.java && jar --create --file app.jar --main-class App -C classes .
+#
+#   Stage 2 (the final image):
+#       FROM eclipse-temurin:21-jre
+#       WORKDIR /app
+#       COPY --from=build /build/app.jar .        <- takes the file from stage 1
+#       ... a normal user (USER), EXPOSE 8080, the HEALTHCHECK from level 5 ...
+#       CMD ["java", "-jar", "app.jar"]
+#
+# The checker wants: it works, it runs as a normal user, it is healthy, there is NO compiler (javac)
+# in the final image, and the image is clearly smaller than the plain JDK image.

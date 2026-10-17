@@ -1,0 +1,14 @@
+# LEVEL 2 - CONFIGURATION: ENV, ARG, LABEL
+#
+# Start from your Dockerfile.1 (copy its lines here). Then add:
+#
+# TODO 1: ENV   a default value for the variable GREETING:      ENV GREETING=Welcome
+#         The app reads it. "docker run -e GREETING=Salut ..." must still be able to change it.
+#
+# TODO 2: ARG   a value that is given WHEN YOU BUILD the image:    ARG APP_VERSION=1.0
+#               (docker build --build-arg APP_VERSION=2.5 ...)
+#
+# TODO 3: LABEL two labels (notes that are stored in the image):
+#               LABEL org.opencontainers.image.title="hello-app"
+#               LABEL version="$APP_VERSION"
+#         Look: the version label uses the ARG. Put the ARG line BEFORE the LABEL lines.

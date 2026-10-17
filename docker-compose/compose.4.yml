@@ -1,0 +1,33 @@
+# LEVEL 4 - START IN THE RIGHT ORDER (healthcheck, depends_on, restart)
+#
+# "depends_on: db" only waits until the db CONTAINER has started. But PostgreSQL needs a few more
+# seconds to be READY. The web app starts too early and says "DB not ready (attempt 1) ... (attempt 2) ..."
+# (look at:  docker compose logs web).  It survives, because it retries. Many apps do not.
+#
+# Start from your compose.3.yml (copy it here). Then:
+#
+# TODO 1: a HEALTHCHECK for the db service: a command that Docker runs again and again. It says if the db is READY:
+#
+#       db:
+#         healthcheck:
+#           test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${DB_USER} -d ${DB_NAME}"]
+#           interval: 3s
+#           timeout: 3s
+#           retries: 10
+#
+#   (-h 127.0.0.1 is important: while PostgreSQL prepares its first start, it listens only on a file socket.
+#    Without it the check says "ready" too early.)
+#
+# TODO 2: make web wait until the db is HEALTHY, not only started:
+#
+#       web:
+#         depends_on:
+#           db:
+#             condition: service_healthy
+#
+# TODO 3: a restart policy for web, so Docker starts it again when it crashes:
+#
+#       web:
+#         restart: unless-stopped
+#
+# The checker looks for these three things, and in the log of web it wants to see:  DB connected (attempt 1)

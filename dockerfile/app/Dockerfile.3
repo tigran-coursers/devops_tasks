@@ -1,0 +1,21 @@
+# LEVEL 3 - LAYERS AND THE CACHE
+#
+# Every instruction makes a LAYER. Docker keeps the layers (the cache). When you build again,
+# it reuses every layer until the first line that CHANGED. After that line, everything is built again.
+#
+# The script scripts/install-deps.sh is SLOW (it pretends to download libraries). Your source
+# file src/App.java changes OFTEN. If you copy the source first and run the script after it,
+# then every small change of the source runs the slow script again. That wastes minutes every day.
+#
+# Start from your Dockerfile.2. Then:
+#
+# TODO: put the instructions in the right ORDER:
+#   1. COPY scripts/install-deps.sh   (it changes RARELY, so it goes first)
+#   2. RUN  sh install-deps.sh        (use the right path, the script must write "deps-id" in /app)
+#   3. COPY src/App.java              (it changes OFTEN, so it goes last)
+#   4. CMD ...
+#
+# The rule: things that change rarely go on TOP, things that change often go at the BOTTOM.
+#
+# The checker builds your image, changes src/App.java, builds again, and reads /app/deps-id.
+# If the number is the same, the slow step was NOT run again. That is what you want.

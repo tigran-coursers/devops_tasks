@@ -1,0 +1,25 @@
+# LEVEL 1 - TWO SERVICES THAT TALK TO EACH OTHER
+#
+# One compose file describes a whole application: all its containers, and how they are connected.
+# You start everything with ONE command:   docker compose -f compose.1.yml up -d
+#
+# Goal: a web service and a database service.
+#
+# TODO: replace every _____ :
+#
+services:
+  web:
+    build: _____                  # the folder that has the Dockerfile of the web app (it is in ./app)
+    ports:
+      - "_____"                   # host port 8090 -> container port 8080   (written "8090:8080")
+    environment:
+      DB_URL: jdbc:postgresql://_____:5432/visits   # the HOST NAME of the database = the NAME of the db service below!
+      DB_USER: app
+      DB_PASSWORD: secret123
+
+  db:
+    image: _____                  # the PostgreSQL image:  postgres:16-alpine
+    environment:
+      POSTGRES_DB: visits
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret123

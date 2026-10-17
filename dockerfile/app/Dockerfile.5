@@ -1,0 +1,16 @@
+# LEVEL 5 - A SAFE IMAGE: NOT ROOT, AND A HEALTHCHECK
+#
+# Start from your Dockerfile.4. Then add:
+#
+# TODO 1: do NOT run the app as "root". If somebody breaks into the app, "root" in the container
+#         is very powerful. Create a normal user and switch to it:
+#             RUN useradd --create-home app
+#             USER app
+#         (Put the USER line AFTER the lines that need root, and make sure the user can read /app.)
+#
+# TODO 2: a HEALTHCHECK. Docker runs a command every few seconds. If it fails, the container
+#         is marked "unhealthy". The image has curl:
+#             HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD curl -f http://localhost:8080/health || exit 1
+#
+# The checker runs the container, asks /whoami (it must NOT say root), and waits until Docker
+# says the container is "healthy".

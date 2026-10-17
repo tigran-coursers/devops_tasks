@@ -1,0 +1,17 @@
+# LEVEL 1 - YOUR FIRST IMAGE
+#
+# Goal: an image that runs the app (src/App.java) and answers on port 8080.
+#
+# TODO: write these instructions, one on each line:
+#
+#   FROM     a base image to build on. It must have Java:       eclipse-temurin:21-jdk
+#   WORKDIR  the folder INSIDE the image where you work:         /app
+#   COPY     copy src/App.java from your computer into the image
+#   EXPOSE   say which port the app listens on:                  8080
+#   CMD      the command that starts the app:                    java App.java
+#
+# IMPORTANT: write CMD in the "exec form", with square brackets and quotes:
+#       CMD ["java", "App.java"]
+# and NOT in the "shell form":   CMD java App.java
+# Why? The shell form starts a shell first, and then your program is a child of that shell.
+# Then "docker stop" talks to the shell, not to your program.

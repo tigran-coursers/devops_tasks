@@ -1,0 +1,14 @@
+# LEVEL 4 - write your .dockerignore here.
+#
+# When you run "docker build", Docker first SENDS the whole folder (the "build context") to the engine.
+# If the folder has big or useless files, the build is slow and the image can get them by accident.
+#
+# A line in this file = a file or folder that is NOT sent. Example:
+#     node_modules/
+#     *.tmp
+#
+# TODO: ignore these things:
+#   1. the folder   junk/       (big test files that do not belong to the app)
+#   2. all the log files   *.log
+#   3. the Dockerfiles themselves   Dockerfile.*
+#   4. this file   .dockerignore

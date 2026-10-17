@@ -1,0 +1,21 @@
+# LEVEL 2 - A VOLUME, SO THE DATA SURVIVES
+#
+# Right now, when you run  docker compose down  and  up  again, the database is EMPTY again:
+# the data lived inside the container, and the container was removed.
+#
+# Start from your compose.1.yml (copy it here). Then:
+#
+# TODO 1: give the db service a VOLUME for its data. PostgreSQL keeps its files in /var/lib/postgresql/data:
+#
+#   services:
+#     db:
+#       volumes:
+#         - dbdata:/var/lib/postgresql/data        # "dbdata" is a NAME. The data lives in the volume, not in the container.
+#
+# TODO 2: at the end of the file, at the TOP LEVEL (no indentation), declare the volume:
+#
+#   volumes:
+#     dbdata:
+#
+# The checker counts some visits, runs "docker compose down" (this removes the containers but NOT the
+# volumes), runs "up" again, and the counter must continue. (To delete the data too: docker compose down -v)

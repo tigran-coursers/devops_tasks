@@ -1,0 +1,19 @@
+# LEVEL 3 - NO SECRETS IN THE COMPOSE FILE
+#
+# The password secret123 is written in the file. A compose file goes into git, and then everybody
+# can read your password. The settings must live in the file  .env  (open it, it is here).
+# Compose reads .env by itself, and you use its values with  ${NAME}.
+#
+# Start from your compose.2.yml (copy it here). Then:
+#
+# TODO: replace the values by variables from .env:
+#
+#     DB_USER: app                    ->   DB_USER: ${DB_USER}
+#     DB_PASSWORD: secret123          ->   DB_PASSWORD: ${DB_PASSWORD}
+#     POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, the DB name in DB_URL  ->  the same idea
+#     - "8090:8080"                   ->   - "${WEB_PORT}:8080"
+#
+# Careful: a variable inside a text works too:   jdbc:postgresql://db:5432/${DB_NAME}
+#
+# The checker looks at your file: the password must NOT be written in it. And everything must still work.
+# Tip: docker compose -f compose.3.yml config   prints the file with all the variables replaced.

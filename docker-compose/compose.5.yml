@@ -1,0 +1,33 @@
+# LEVEL 5 - NETWORKS AND PROFILES
+#
+# Right now every service is on one network, and everybody can talk to everybody. Better:
+#   - the database must be reachable ONLY by the web app. Not from your computer, not from other services.
+#   - an admin tool (Adminer, a web page to look inside the database) is useful, but it must start ONLY when you ask.
+#
+# Start from your compose.4.yml (copy it here). Then:
+#
+# TODO 1: two networks, declared at the top level:
+#
+#   networks:
+#     frontend:
+#     backend:
+#
+#   - web is on BOTH:         networks: [frontend, backend]
+#   - db is only on backend:  networks: [backend]
+#
+# TODO 2: db must not publish a port. Make sure it has no "ports:" at all. (web talks to it through the network.)
+#
+# TODO 3: a third service, adminer. It starts only with the profile "tools":
+#
+#   adminer:
+#     image: adminer
+#     profiles: ["tools"]
+#     ports:
+#       - "8091:8080"
+#     networks: [backend]
+#
+# Start it with:   docker compose -f compose.5.yml --profile tools up -d
+# Then open http://localhost:8091   (System: PostgreSQL, Server: db, user and password from .env)
+#
+# The checker: db is only on the backend network and has no port, web is on both, adminer is NOT started
+# by a normal "up", and it IS started (and answers on 8091) with --profile tools.
