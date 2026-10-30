@@ -1,0 +1,130 @@
+# =====================================================================================================
+#  YOUR PIPELINE - the file that you write in this module
+# =====================================================================================================
+#
+#  GitHub Actions starts this file by itself, when something happens in your repository.
+#  Goal: when somebody pushes to the branch "main", GitHub must run 3 stages, one after the other:
+#
+#        BUILD  ──►  TEST  ──►  PACKAGE   (──►  DEPLOY, the bonus)
+#
+#  HOW TO WORK
+#    1. Write a level below (remove the "# " in front of the lines, and replace every _____ ).
+#    2. Run  ./check.sh   It reads this file and tells you which checks pass.
+#    3. When the levels are green, push to GitHub and open the "Actions" tab of your repository.
+#
+#  YAML RULES
+#    - The SPACES are the structure: 2 spaces for each new level. NEVER use a tab.
+#    - A line that starts with # is a comment. The whole file is comments now, so nothing runs yet.
+#
+#  The README.md of the module explains every level in more detail.
+# =====================================================================================================
+
+
+# -----------------------------------------------------------------------------------------------------
+# LEVEL 1 - THE TRIGGER:  when does the pipeline start?
+# -----------------------------------------------------------------------------------------------------
+# TODO 1.1  Give the pipeline a name.
+# TODO 1.2  Start it ONLY on a push to the branch main (not on every branch).
+#
+# name: CI/CD
+#
+# on:
+#   push:
+#     branches: [ _____ ]
+
+
+# -----------------------------------------------------------------------------------------------------
+# LEVEL 5 - SPEED AND SAFETY (top-level settings. They go here, between "on:" and "jobs:")
+# -----------------------------------------------------------------------------------------------------
+# TODO 5.1  The pipeline may only READ the repository.
+# TODO 5.2  A new push must CANCEL the old run of the same branch.
+#           (Also in every job of the levels below: timeout-minutes: 10  and  cache: maven)
+#
+# permissions:
+#   contents: _____
+#
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: _____
+
+
+# -----------------------------------------------------------------------------------------------------
+# LEVEL 2 + 3 + 4 - THE THREE STAGES (jobs)
+# -----------------------------------------------------------------------------------------------------
+# Each job runs on its OWN fresh machine, which knows NOTHING about the other jobs.
+# So EVERY job starts with the same 2 steps: download the code, install Java.
+#
+# jobs:
+#
+#   # ---------------------------------------------------------------- stage 1: BUILD
+#   build:
+#     runs-on: _____                      # TODO 2.1  a Linux machine: ubuntu-latest
+#     timeout-minutes: 10                 # (level 5) a stuck job must stop
+#     steps:
+#       - uses: actions/checkout@v4       # TODO 2.2  download the code of the repository
+#       - uses: actions/setup-java@v4     # TODO 2.3  install Java 21
+#         with:
+#           distribution: temurin
+#           java-version: '_____'
+#           cache: _____                  # (level 5) maven: do not download the libraries again every time
+#       - name: Compile
+#         run: mvn -B _____               # TODO 3.1  compile
+#
+#   # ---------------------------------------------------------------- stage 2: TEST
+#   test:
+#     needs: _____                        # TODO 3.2  start only after the job "build" succeeded
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     steps:
+#       # TODO 2.4  the same 2 steps as in "build": checkout + setup-java (with cache: maven)
+#       - name: Run the tests
+#         run: mvn -B _____               # TODO 3.3  run the tests
+#       - name: Keep the test reports     # TODO 4.1  keep the reports, ALSO when the tests fail
+#         if: _____                       #           always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: test-reports
+#           path: target/surefire-reports
+#
+#   # ---------------------------------------------------------------- stage 3: PACKAGE
+#   package:
+#     needs: _____                        # TODO 3.4  start only after the job "test" succeeded
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     steps:
+#       # TODO 2.5  the same 2 steps again: checkout + setup-java (with cache: maven)
+#       - name: Build the jar
+#         run: mvn -B package -DskipTests -Dbuild.number=${{ github.run_number }}   # TODO 3.5  the tests already ran: skip them
+#       - name: Keep the jar              # TODO 4.2  keep the jar file
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: cicd-demo-jar
+#           path: target/_____            #           the name of the jar: cicd-demo.jar
+
+
+# -----------------------------------------------------------------------------------------------------
+# LEVEL 6 - DEPLOY TO A FREE SERVER  (BONUS. Do it only after the README part "Set up Render")
+# -----------------------------------------------------------------------------------------------------
+# TODO 6.1  A fourth job that starts after "package", and is an environment called production.
+# TODO 6.2  Call the deploy hook of your hosting service. The URL is a SECRET. NEVER write it in this file.
+# TODO 6.3  Use curl -f, so a failed deploy makes the pipeline fail (without -f it stays green).
+# TODO 6.4  A smoke test: call /health of the RUNNING application, and retry (a free server wakes up slowly).
+#
+#   deploy:
+#     needs: _____                        # package
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 15
+#     environment: _____                  # production
+#     steps:
+#       - name: Tell the hosting service to deploy
+#         run: curl -fsS -X POST "${{ secrets._____ }}"          # RENDER_DEPLOY_HOOK_URL
+#       - name: Smoke test
+#         env:
+#           APP_URL: ${{ vars.APP_URL }}
+#         run: |
+#           for i in $(seq 1 30); do
+#             if curl -fsS "$APP_URL/_____"; then exit 0; fi       # the health address
+#             echo "not ready yet ($i/30)"
+#             sleep 10
+#           done
+#           exit 1

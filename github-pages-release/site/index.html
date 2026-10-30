@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Release Journey</title>
+    <!-- IMPORTANT: the paths are RELATIVE (style.css, not /style.css).
+         A GitHub Pages site lives in a sub-folder: https://<you>.github.io/<repo>/
+         A path that starts with "/" would look at https://<you>.github.io/style.css and find nothing. -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+    <header>
+        <h1>My Release Journey</h1>
+        <p class="subtitle">A tiny website that I publish and release, step by step.</p>
+        <p class="version-line">Current version: <strong id="version">loading...</strong></p>
+    </header>
+
+    <section>
+        <h2>About this site</h2>
+        <p id="about">This is a static website: only HTML, CSS and JavaScript. There is no server and no database.
+            GitHub keeps the files and shows them to the world, for free.</p>
+        <button id="theme" type="button">Switch to dark mode</button>
+    </section>
+
+    <section>
+        <h2>Changelog</h2>
+        <p class="hint">Every release adds a line here. Open <code>changelog.json</code> to add yours.</p>
+        <ul id="changelog"></ul>
+    </section>
+</main>
+<footer>Published with GitHub Pages</footer>
+<script src="app.js"></script>
+</body>
+</html>

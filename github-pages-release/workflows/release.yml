@@ -1,0 +1,44 @@
+# =====================================================================================================
+#  LEVEL 5 - AUTOMATIC RELEASES
+# =====================================================================================================
+#
+#  In level 4 you made a release by hand, with the mouse. Now a pipeline does it for you:
+#  you push a TAG (for example v1.2.0), and the pipeline makes the GitHub Release, writes the release notes,
+#  and attaches a file with the site (site.zip) that people can download.
+#
+#  WHERE: copy this file into YOUR repository, to   .github/workflows/release.yml   (create the folders), and fill it there.
+#
+#  How to work: remove the "# " in front of the lines, replace every _____ , then run ./check.sh
+#
+#  TODO 5.1  Start only when a TAG that begins with "v" is pushed (v1.2.0, v2.0.0 ...). Not on a normal push.
+#
+# name: Release
+#
+# on:
+#   push:
+#     tags: [ '_____' ]                     # v*   ("*" means: anything after the v)
+#
+#  TODO 5.2  Creating a release WRITES to the repository, so the pipeline needs the permission "contents: write".
+#
+# permissions:
+#   contents: _____
+#
+#  TODO 5.3  The job: get the files, pack them in site.zip, and create the release.
+#
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Pack the site
+#         run: zip -r _____ . -x '.git/*' '.github/*'          # the name of the file: site.zip
+#
+#       - name: Create the release
+#         env:
+#           GH_TOKEN: ${{ github.token }}                      # lets the "gh" command talk to GitHub as this pipeline
+#         run: gh release create "${{ github.ref_name }}" site.zip --title "${{ github.ref_name }}" --generate-notes
+#
+#  (github.ref_name is the name of the tag that started the pipeline, for example v1.2.0.
+#  --generate-notes lets GitHub write the release notes from the commits.)

@@ -1,0 +1,58 @@
+# =====================================================================================================
+#  LEVEL 3 - DEPLOY THE SITE WITH A GITHUB ACTIONS PIPELINE
+# =====================================================================================================
+#
+#  Until now GitHub published your site by itself ("Deploy from a branch"). Now YOU describe the
+#  deployment in a pipeline. Why? A pipeline can run checks before the publish, and you see every
+#  deployment, with its log, in the "Actions" tab.
+#
+#  WHERE: copy this file into YOUR repository, to   .github/workflows/pages.yml   (create the folders), and fill it there.
+#
+#  BEFORE you push this file: Settings -> Pages -> "Build and deployment" -> Source: choose "GitHub Actions".
+#
+#  How to work: remove the "# " in front of the lines, replace every _____ , then run ./check.sh
+#  (YAML uses SPACES, never tabs. A line that starts with # is a comment.)
+#
+#  TODO 3.1  The name of the pipeline, and when it starts: on every push to main, and by hand
+#  (workflow_dispatch adds a "Run workflow" button in the Actions tab).
+#
+# name: Deploy to GitHub Pages
+#
+# on:
+#   push:
+#     branches: [ _____ ]
+#   workflow_dispatch:
+#
+#  TODO 3.2  The permissions. The pipeline may read the code, and it needs two special permissions
+#  to publish a Pages site: "pages: write" and "id-token: write".
+#
+# permissions:
+#   contents: read
+#   pages: _____
+#   id-token: _____
+#
+#  TODO 3.3  Only ONE deployment at a time (if two run together, they could publish in the wrong order).
+#  A deployment that already started must NOT be cancelled in the middle.
+#
+# concurrency:
+#   group: pages
+#   cancel-in-progress: _____
+#
+#  TODO 3.4  The job. It uses the special environment "github-pages", and its steps are the 4 official actions:
+#  checkout (get the files) -> configure-pages -> upload-pages-artifact (pack the site) -> deploy-pages (publish).
+#
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     environment:
+#       name: github-pages
+#       url: ${{ steps.deployment.outputs.page_url }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/configure-pages@v5
+#       - uses: actions/upload-pages-artifact@v3
+#         with:
+#           path: .                         # the folder to publish: the whole repository
+#       - id: deployment                    # the id lets the "url:" above read the address of the site
+#         uses: actions/_____@v4            # deploy-pages
